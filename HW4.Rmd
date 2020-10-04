@@ -1,0 +1,44 @@
+---
+title: "Stat346 HW4"
+author: "Jianing Ren"
+date: "04/10/2020"
+output: html_document
+---
+## 1 Simulation of Results
+
+### A
+
+```{r}
+suppressMessages(library(mosaic))
+set.seed(1000)
+x=runif(36,0,10)
+sxx=sum((x-mean(x))^2)
+#lms=lapply(1:1000, function(i)lm(15*x+25+rnorm(36,0,25)~x))
+```
+
+### B
+```{r}
+set.seed(1000)
+lms2=do(1000)*lm((25+15*x+rnorm(36,0,25))~x)
+sd(lms2$x) # This is the SD of the 1000 simulated slopes
+25/sqrt(sxx) # This is the theoratical SDs of the slopes
+```
+
+The SD of the 1000 simulated slopes is 1.489, which is about 2% different from the theoratical SD of 1.527. This roughly matches the theoratical result. 
+
+### C
+```{r}
+sd(lms2$Intercept) # Simulated intercept SD
+25*sqrt(1/36+mean(x)^2/sxx)
+```
+
+The SD of the 1000 simulated intercepts is 8.068, which is about 1% different from the theoratical SD of 8.181. Again, this matches the theoratical result. 
+
+### D
+```{r}
+pred5=lms2$Intercept+lms2$x*5
+pred30=lms2$Intercept+lms2$x*30
+boxplot(pred5,pred30)
+```
+
+Because the model's scope is x from 0-10, extrapolating the model to x=30 will be highly unreliable, as seen from the much higher variation in the predicted values. The variation in slope can cause huge variation in fitted value of an extrapolated point with high leverage. 
